@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  frontapp:
+    image: frontapp-img
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        app_name: frontapp
+    ports:
+      - "8080:8080" # frontapp localhost port
+    environment:
+      BACK_URL: http://backapp:8080 # backapp url for frontapp
+    depends_on:
+      - backapp
+    networks:
+      - internal
+
+  backapp:
+    image: backapp-img
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        app_name: backapp
+    expose:
+      - "8080" # backup only exposed to frontapp
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
